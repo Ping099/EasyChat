@@ -45,6 +45,10 @@ const router = createRouter({
           path: '/set',
           component: () => import('@/views/sideNav/Setting.vue'),
         },
+        {
+          path:'/function',
+          component: () => import('@/views/sideNav/Function.vue'),
+        }
       ],
     },
     {

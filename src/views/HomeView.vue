@@ -26,6 +26,9 @@ const url = ref(userStore.Url)
             <el-icon color="#fff" size="30px" :onclick="() => router.push('/set')">
               <Tools
             /></el-icon>
+            <el-icon color="#fff" size="30px" :onclick="() => router.push('/function')">
+              <Tools
+            /></el-icon>
           </el-space>
         </el-aside>
         <!-- 列表 -->
