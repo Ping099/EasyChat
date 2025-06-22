@@ -34,58 +34,79 @@ const go = (item) => {
   router.push({ path: '/friend/detail', query: { Msg: JSON.stringify(item) } })
 }
 //即时通讯
-let ws = new WebSocket('ws://localhost:8080/login')
-const openHand = (e) => {
-  console.log('ws连接成功！', e)
-}
-const closeHand = (e) => {
-  console.log('ws关闭！', e)
-}
+// let ws = new WebSocket('ws://localhost:8080/login')
 
-const messageHand = (e) => {
-  // console.log(e)
+//即时通讯封装版
+import { WebSocketClient } from '@/utils/ws'
+const ws = new WebSocketClient('ws://localhost:8080/login')
+// const openHand = (e) => {
+//   console.log('ws连接成功！', e)
+// }
+ws.connect()
+ws.onopen(() => {
+  console.log('ws连接成功！')
+})
+// const closeHand = (e) => {
+//   console.log('ws关闭！', e)
+// }
+ws.onclose(() => {
+  console.log('ws关闭！')
+})
+
+// const messageHand = (e) => {
+//   // console.log(e)
+//   console.log('login接收后端的消息', JSON.parse(e.data))
+
+//   const res = JSON.parse(e.data)
+//   if (res.type == 'login' && res.msg.id != userId) open(res.msg.username)
+// }
+
+ws.onmessage((e) => {
   console.log('login接收后端的消息', JSON.parse(e.data))
-
   const res = JSON.parse(e.data)
   if (res.type == 'login' && res.msg.id != userId) open(res.msg.username)
-}
-const errorHand = (e) => {
-  console.log('ws出错', e)
-}
-ws.addEventListener('open', openHand) //连接
-ws.addEventListener('close', closeHand) //关闭
-ws.addEventListener('message', messageHand) //接收消息
-ws.addEventListener('error', errorHand) //出错
+})
+
+// const errorHand = (e) => {
+//   console.log('ws出错', e)
+// }
+// ws.onerror(() => {
+//   console.log('ws出错')
+// })
+// ws.addEventListener('open', openHand) //连接
+// ws.addEventListener('close', closeHand) //关闭
+// ws.addEventListener('message', messageHand) //接收消息
+// ws.addEventListener('error', errorHand) //出错
 //发送消息
 const sendWs = (msg) => {
   ws.send(msg)
 }
+
 //关闭连接
 var isClose = false
 const closeWs = () => {
   ws.close()
 }
 //重连
-const restart = () => {
-  console.log('客户端与服务端连接失败准备重连')
-  //卸载
-  onUnmounted(() => {})
-  const timer = setInterval(() => {
-    ws = new WebSocket('ws://localhost:8080/login')
-    if (ws.readyState === 0) {
-      clearInterval(timer)
-      ws.addEventListener('open', openHand)
-      ws.addEventListener('close', closeHand)
-      ws.addEventListener('message', messageHand)
-      ws.addEventListener('error', errorHand)
-    }
-  }, 1000)
-}
+// const restart = () => {
+//   console.log('客户端与服务端连接失败准备重连')
+//   //卸载
+//   onUnmounted(() => {})
+//   const timer = setInterval(() => {
+//     ws = new WebSocket('ws://localhost:8080/login')
+//     if (ws.readyState === 0) {
+//       clearInterval(timer)
+//       ws.addEventListener('open', openHand)
+//       ws.addEventListener('close', closeHand)
+//       ws.addEventListener('message', messageHand)
+//       ws.addEventListener('error', errorHand)
+//     }
+//   }, 1000)
+// }
 onMounted(() => {
-  restart()
+  // restart()
 })
 //消息弹出框
-import { h } from 'vue'
 import { ElNotification } from 'element-plus'
 
 const open = (msg) => {
