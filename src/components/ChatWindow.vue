@@ -221,6 +221,7 @@ const merge = async (id, fileName, silceNum) => {
 }
 //文件上传
 import axios from 'axios'
+import SparkMD5 from 'spark-md5'
 const isFile = ref(false)
 const sel = () => {
   isFile.value = !isFile.value
@@ -241,6 +242,11 @@ const handChange = async (file) => {
   var silceNum = Math.ceil(totalFile / sliceSize)
   console.log('总分片数', silceNum)
   var start = 0
+  let spark = new SparkMD5.ArrayBuffer()
+  const arrayBuffer = await file.arrayBuffer()
+  spark.append(arrayBuffer)
+  const fileHash = spark.end()
+  console.log('MD5值', fileHash)
   while (start < totalFile) {
     const sliceFile = file.slice(start, start + sliceSize)
     silceList.push(sliceFile)
